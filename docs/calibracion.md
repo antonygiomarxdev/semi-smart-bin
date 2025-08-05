@@ -1,6 +1,6 @@
-# Guía de Calibración - Smart Bin
+# Guía de Calibración - Smart Bin Semi-Inteligente
 
-## Calibración del Sensor de Color
+## Calibración del Sensor de Color Semi-Inteligente
 
 ### 1. Preparación
 - Asegurar iluminación consistente
@@ -96,14 +96,20 @@ void verificarDistancia() {
 
 ### 6. Verificación Final
 
-#### Checklist de Calibración
+#### Checklist de Calibración Semi-Inteligente
 - [ ] Sensor de color responde correctamente
 - [ ] Valores RGB normalizados son consistentes
-- [ ] Clasificación de colores es precisa
+- [ ] Clasificación semi-inteligente de colores es precisa
 - [ ] Sensor ultrasónico detecta objetos correctamente
 - [ ] Servomotor abre/cierra completamente
 - [ ] LCD muestra información correcta
 - [ ] LED de iluminación funciona
+
+#### Limitaciones de la Clasificación Semi-Inteligente
+- [ ] Verificar que el sistema solo clasifica por color
+- [ ] Confirmar que no distingue materiales específicos
+- [ ] Validar dependencia de iluminación
+- [ ] Documentar necesidad de recalibración periódica
 
 #### Pruebas de Validación
 1. **Prueba de Objetos Conocidos**: Usar objetos de colores específicos

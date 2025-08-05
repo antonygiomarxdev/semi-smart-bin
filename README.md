@@ -1,14 +1,14 @@
-# Smart Bin - Sistema de Clasificación de Basura Inteligente
+# Smart Bin - Sistema de Clasificación de Basura Semi-Inteligente
 
 ## Descripción
-Sistema de clasificación de basura inteligente desarrollado con Arduino que detecta automáticamente objetos, clasifica su color y determina si es orgánico o inorgánico, abriendo el contenedor correspondiente.
+Sistema de clasificación de basura semi-inteligente desarrollado con Arduino que detecta automáticamente objetos, clasifica su color y determina si es orgánico o inorgánico, abriendo el contenedor correspondiente.
 
 ## Características Principales
 - 🎨 **Clasificación por Color**: Utiliza sensor TCS3200 para detectar colores específicos
 - 📏 **Detección de Proximidad**: Sensor ultrasónico HC-SR04 para detectar objetos
 - 🤖 **Actuación Automática**: Servomotor SG90 para abrir/cerrar contenedores
 - 📺 **Interfaz de Usuario**: Display LCD I2C para mostrar información
-- 💡 **Iluminación Inteligente**: LED para mejorar la detección de colores
+- 💡 **Iluminación Semi-Inteligente**: LED para mejorar la detección de colores
 
 ## Estructura del Proyecto
 ```
@@ -17,7 +17,9 @@ smart-bin/
 │   └── smart_bin.ino      # Sistema principal de clasificación
 ├── docs/                   # Documentación técnica
 │   ├── componentes.md      # Especificaciones de componentes
-│   └── calibracion.md     # Guía de calibración
+│   ├── calibracion.md     # Guía de calibración
+│   ├── configuracion.md   # Parámetros de configuración
+│   └── limitaciones.md    # Limitaciones del sistema semi-inteligente
 ├── schematics/             # Diagramas y esquemas
 │   └── conexiones.fzz      # Esquema de conexiones (Fritzing)
 ├── tests/                  # Pruebas y validaciones
@@ -60,14 +62,20 @@ smart-bin/
 ### Funcionamiento Normal
 1. **Espera**: El sistema muestra "Esperando objeto" en el LCD
 2. **Detección**: Cuando un objeto se acerca (< 10cm), se activa la detección
-3. **Clasificación**: El sensor de color analiza el objeto
+3. **Clasificación Semi-Inteligente**: El sensor de color analiza el objeto
 4. **Resultado**: El LCD muestra "ORGÁNICO" o "INORGÁNICO"
 5. **Actuación**: El servomotor abre el contenedor correspondiente
 
 ### Configuración de Colores
-El sistema clasifica objetos según estos colores:
+El sistema semi-inteligente clasifica objetos según estos colores:
 - **Orgánicos**: Rojo, Verde, Amarillo, Violeta, Naranja
 - **Inorgánicos**: Azul, Blanco, Negro, Café
+
+### Limitaciones del Sistema Semi-Inteligente
+- Clasificación basada únicamente en color
+- No distingue materiales específicos
+- Requiere calibración manual
+- Sensible a cambios de iluminación
 
 ### Monitoreo y Debug
 - Conecta el Arduino a la computadora

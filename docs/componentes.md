@@ -1,4 +1,4 @@
-# Componentes del Sistema Smart Bin
+# Componentes del Sistema Smart Bin Semi-Inteligente
 
 ## Componentes Principales
 
@@ -8,10 +8,11 @@
 - **Pines utilizados**: 3, 4, 5, 6, 7, 8, 9, 10, 12
 
 ### 2. Sensor de Color TCS3200
-- **Función**: Detección y clasificación de colores
+- **Función**: Detección y clasificación semi-inteligente de colores
 - **Pines**: S0(4), S1(5), S2(6), S3(7), sensorOut(8)
 - **Configuración**: 20% de frecuencia (S0=HIGH, S1=LOW)
 - **Filtros**: Rojo(LOW,LOW), Verde(HIGH,HIGH), Azul(LOW,HIGH)
+- **Limitación**: Solo detecta colores, no materiales específicos
 
 ### 3. Sensor Ultrasónico HC-SR04
 - **Función**: Detección de proximidad
@@ -57,13 +58,19 @@ Arduino Pin 10 → HC-SR04 ECHO
 Arduino Pin 12 → LED de iluminación
 ```
 
-## Consideraciones de Diseño
+## Consideraciones de Diseño Semi-Inteligente
 
 ### Calibración de Colores
 Los valores de color están calibrados para el entorno específico. Para recalibrar:
 1. Usar objetos de referencia conocidos
 2. Medir valores RGB normalizados
 3. Actualizar array `colores[]` en el código
+
+### Limitaciones del Sistema
+- **Clasificación limitada**: Solo por color, no por material
+- **Dependencia de iluminación**: Requiere condiciones de luz consistentes
+- **Calibración manual**: Necesita ajuste periódico
+- **Falsos positivos**: Puede clasificar incorrectamente objetos similares
 
 ### Umbral de Distancia
 - **Valor actual**: 10cm

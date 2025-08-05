@@ -1,6 +1,6 @@
-# Configuración del Sistema Smart Bin
+# Configuración del Sistema Smart Bin Semi-Inteligente
 
-## Parámetros de Configuración
+## Parámetros de Configuración Semi-Inteligente
 
 ### Configuración General
 ```cpp
@@ -45,7 +45,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // Dirección I2C, 16x2 caracteres
 #define SERVO_ABIERTO 90       // Posición abierta
 ```
 
-## Configuración de Colores
+## Configuración de Colores Semi-Inteligente
 
 ### Valores de Referencia
 Los valores están normalizados (R+G+B = 1.0):
@@ -64,11 +64,17 @@ ColorReferencia colores[] = {
 };
 ```
 
-### Proceso de Calibración
+### Proceso de Calibración Semi-Inteligente
 1. Usar objetos de referencia conocidos
 2. Medir valores RGB normalizados
 3. Actualizar array con nuevos valores
-4. Probar clasificación
+4. Probar clasificación limitada por color
+
+### Limitaciones de la Clasificación por Color
+- **No distingue materiales**: Solo clasifica por color, no por composición
+- **Dependencia de iluminación**: Requiere condiciones de luz consistentes
+- **Falsos positivos**: Objetos del mismo color se clasifican igual
+- **Calibración manual**: Necesita ajuste periódico según el entorno
 
 ## Configuración de Tiempos
 
