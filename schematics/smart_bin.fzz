@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fritzing version="0.9.10" application="Fritzing" applicationVersion="0.9.10" >
+  <author>Smart Bin Team</author>
+  <title>Smart Bin - Conexiones Arduino</title>
+  <description>Sistema de clasificación de basura semi-inteligente</description>
+  <date>2024</date>
+  <url></url>
+  <tags>arduino, sensor, color, ultrasonico, servo, lcd</tags>
+  <properties>
+    <property name="family">Arduino</property>
+    <property name="variant">Arduino Uno</property>
+  </properties>
+  <views>
+    <breadboardView>
+      <layers>
+        <layer layerIdRef="0"/>
+        <layer layerIdRef="1"/>
+      </layers>
+    </breadboardView>
+    <schematicView>
+      <layers>
+        <layer layerIdRef="0"/>
+        <layer layerIdRef="1"/>
+      </layers>
+    </schematicView>
+    <pcbView>
+      <layers>
+        <layer layerIdRef="0"/>
+        <layer layerIdRef="1"/>
+      </layers>
+    </pcbView>
+  </views>
+  <instances>
+    <instance instanceId="arduino" moduleIdRef="ArduinoUnoModuleID" path="">
+      <views>
+        <breadboardView>
+          <geometry z="-1" x="-14.5" y="-1.5" width="69" height="53.5"/>
+          <layers>
+            <layer layerIdRef="0"/>
+            <layer layerIdRef="1"/>
+          </layers>
+        </breadboardView>
+        <schematicView>
+          <geometry z="-1" x="-14.5" y="-1.5" width="69" height="53.5"/>
+          <layers>
+            <layer layerIdRef="0"/>
+            <layer layerIdRef="1"/>
+          </layers>
+        </schematicView>
+        <pcbView>
+          <geometry z="-1" x="-14.5" y="-1.5" width="69" height="53.5"/>
+          <layers>
+            <layer layerIdRef="0"/>
+            <layer layerIdRef="1"/>
+          </layers>
+        </pcbView>
+      </views>
+    </instance>
+  </instances>
+  <connectors>
+    <connector name="0" type="male" description="Digital Pin 0"/>
+    <connector name="1" type="male" description="Digital Pin 1"/>
+    <connector name="2" type="male" description="Digital Pin 2"/>
+    <connector name="3" type="male" description="Digital Pin 3"/>
+    <connector name="4" type="male" description="Digital Pin 4"/>
+    <connector name="5" type="male" description="Digital Pin 5"/>
+    <connector name="6" type="male" description="Digital Pin 6"/>
+    <connector name="7" type="male" description="Digital Pin 7"/>
+    <connector name="8" type="male" description="Digital Pin 8"/>
+    <connector name="9" type="male" description="Digital Pin 9"/>
+    <connector name="10" type="male" description="Digital Pin 10"/>
+    <connector name="11" type="male" description="Digital Pin 11"/>
+    <connector name="12" type="male" description="Digital Pin 12"/>
+    <connector name="13" type="male" description="Digital Pin 13"/>
+    <connector name="A0" type="male" description="Analog Pin A0"/>
+    <connector name="A1" type="male" description="Analog Pin A1"/>
+    <connector name="A2" type="male" description="Analog Pin A2"/>
+    <connector name="A3" type="male" description="Analog Pin A3"/>
+    <connector name="A4" type="male" description="Analog Pin A4 (SDA)"/>
+    <connector name="A5" type="male" description="Analog Pin A5 (SCL)"/>
+    <connector name="5V" type="male" description="5V Power"/>
+    <connector name="3V3" type="male" description="3.3V Power"/>
+    <connector name="GND" type="male" description="Ground"/>
+    <connector name="VIN" type="male" description="Vin"/>
+    <connector name="IOREF" type="male" description="IOREF"/>
+    <connector name="RESET" type="male" description="Reset"/>
+  </connectors>
+</fritzing> 
