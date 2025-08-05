@@ -1,0 +1,41 @@
+# Archivos de Arduino IDE
+*.hex
+*.elf
+*.eep
+*.bin
+*.map
+*.sym
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Librerías de Arduino
+libraries/
+
+# Archivos de configuración local
+*.local
+
+# Logs
+*.log
+
+# Archivos de backup
+*.bak
+*.backup
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de compilación
+build/
+obj/
+
+# Archivos de documentación temporal
+*.tmp.md 
