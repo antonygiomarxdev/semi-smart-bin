@@ -1,19 +1,32 @@
-// ColorSensor.cpp
 #include "ColorSensor.h"
+#include "Config.h"
+
+#if DEBUG
+#define LOGD(msg) Serial.println(msg)
+#else
+#define LOGD(msg) \
+  do { \
+  } while (0)
+#endif
+#if DEEP_DEBUG
+#define LOGDD(msg) Serial.println(msg)
+#else
+#define LOGDD(msg) \
+  do { \
+  } while (0)
+#endif
 
 ColorSensor::ColorSensor(uint8_t s0, uint8_t s1,
                          uint8_t s2, uint8_t s3,
                          uint8_t outPin)
- : _s0(s0), _s1(s1), _s2(s2), _s3(s3), _outPin(outPin) {}
+  : _s0(s0), _s1(s1), _s2(s2), _s3(s3), _out(outPin) {}
 
 void ColorSensor::begin() {
   pinMode(_s0, OUTPUT);
   pinMode(_s1, OUTPUT);
   pinMode(_s2, OUTPUT);
   pinMode(_s3, OUTPUT);
-  pinMode(_outPin, INPUT);
-
-  // Máxima frecuencia de salida
+  pinMode(_out, INPUT);
   digitalWrite(_s0, HIGH);
   digitalWrite(_s1, LOW);
 }
@@ -21,12 +34,16 @@ void ColorSensor::begin() {
 int ColorSensor::measure(bool s2Level, bool s3Level) {
   digitalWrite(_s2, s2Level);
   digitalWrite(_s3, s3Level);
-  delay(50);
+  delayMicroseconds(50);
 
   long sum = 0;
-  for (int i = 0; i < _samples; ++i) {
-    sum += pulseIn(_outPin, LOW);
-    delay(5);
+  for (int i = 0; i < COLOR_SAMPLE_COUNT; ++i) {
+    long pulse = pulseIn(_out, LOW);
+    sum += pulse;
+    LOGDD(String("[DEEP] Color raw pulse[") + i + "] = " + pulse + " µs");
+    delayMicroseconds(5);
   }
-  return sum / _samples;
+  int avg = sum / COLOR_SAMPLE_COUNT;
+  LOGD(String("[DBG] Color avg = ") + avg);
+  return avg;
 }

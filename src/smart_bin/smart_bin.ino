@@ -1,12 +1,12 @@
-#include "Config.h"
 #include <LiquidCrystal_I2C.h>
 #include <Servo.h>
+#include "Config.h"
+#include "Types.h"
 #include "DistanceSensor.h"
 #include "ColorSensor.h"
 #include "DisplayManager.h"
 #include "StateMachine.h"
 
-// Definición de pines
 #define PIN_TRIG 9
 #define PIN_ECHO 10
 #define PIN_S0 4
@@ -14,9 +14,7 @@
 #define PIN_S2 6
 #define PIN_S3 7
 #define PIN_SENSOR_OUT 8
-#define PIN_LED 12
 #define PIN_SERVO 2
-
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 Servo servo;
@@ -28,9 +26,11 @@ StateMachine fsm(ds, cs, dm, servo);
 void setup() {
   if (DEBUG || DEEP_DEBUG) {
     Serial.begin(SERIAL_BAUD);
-    while (!Serial) {}
+    while (!Serial)
+      ;
   }
 
+  // Ahora inicializa el resto
   servo.attach(PIN_SERVO);
   ds.begin();
   cs.begin();

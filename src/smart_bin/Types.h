@@ -1,6 +1,6 @@
 #pragma once
 
-/// Código de color
+/// Códigos de color
 enum ColorCodigo {
   ORG_ROJO,
   ORG_VERDE,
@@ -14,7 +14,7 @@ enum ColorCodigo {
   COLOR_INDEFINIDO
 };
 
-/// Estados del sistema
+/// Estados de la FSM
 enum EstadoSistema {
   ESPERANDO = 0,
   DETECTANDO = 1,
