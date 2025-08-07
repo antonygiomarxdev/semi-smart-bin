@@ -5,45 +5,50 @@
 #include <math.h>
 #include <float.h>  // Para FLT_MAX
 
-// ——————————————————————— MODOS DE EJECUCIÓN ———————————————————————
-// Versión de producción: quita TODO log y minimiza retardos
+// ——————————————— MODOS DE EJECUCIÓN ———————————————
+// Versión de producción: quita logs y minimiza retardos
 static constexpr bool PRODUCTION_MODE = false;
-
-// Logs de diagnóstico profundo (estado/distancias en cada loop())
-static constexpr bool DEEP_DEBUG      = false && !PRODUCTION_MODE;
-
+// Debug profundo: registra cada iteración de loop
+static constexpr bool DEEP_DEBUG = false && !PRODUCTION_MODE;
 // Logs generales de cambio de estado y errores
-static constexpr bool DEBUG           = !PRODUCTION_MODE;
+static constexpr bool DEBUG = !PRODUCTION_MODE;
 
-// ——————————————————————— CONFIGURACIONES ———————————————————————
-static const int SERIAL_BAUD           = 9600;
-static const int BT_BAUD               = 9600;
+// ————————————— CONFIGURACIONES —————————————
+static const int SERIAL_BAUD = 9600;
+static const int BT_BAUD = 9600;
 
-static const unsigned long ANALYSIS_TIME_MS      = 1000;
-static const unsigned long RESULT_TIME_MS        = 7000;
+static const unsigned long ANALYSIS_TIME_MS = 1000;
+static const unsigned long RESULT_TIME_MS = 7000;
 static const unsigned long INACTIVITY_TIMEOUT_MS = 15000;
 
-static const int DIST_THRESHOLD_CM     = 10;
-static const float COLOR_DIST_THRESHOLD  = 0.35f;
-static const int COLOR_SAMPLE_COUNT    = 10;
+static const int DIST_THRESHOLD_CM = 10;
+static const float COLOR_DIST_THRESHOLD = 0.35f;
+static const int COLOR_SAMPLE_COUNT = 10;
 
 // Pines
-static const int PIN_TRIG        = 9;
-static const int PIN_ECHO        = 10;
-static const int PIN_S0          = 4;
-static const int PIN_S1          = 5;
-static const int PIN_S2          = 6;
-static const int PIN_S3          = 7;
-static const int PIN_SENSOR_OUT  = 8;
-static const int PIN_LED         = 12;
-static const int PIN_SERVO       = 2;
-static const int PIN_BT_RX       = 3;
-static const int PIN_BT_TX       = 11;
+static const int PIN_TRIG = 9;
+static const int PIN_ECHO = 10;
+static const int PIN_S0 = 4;
+static const int PIN_S1 = 5;
+static const int PIN_S2 = 6;
+static const int PIN_S3 = 7;
+static const int PIN_SENSOR_OUT = 8;
+static const int PIN_LED = 12;
+static const int PIN_SERVO = 2;
+static const int PIN_BT_RX = 3;
+static const int PIN_BT_TX = 11;
 
-// —————————————————————— ENUMS Y ESTRUCTURAS ——————————————————————
+// ————————————— ENUM Y ESTRUCTURAS —————————————
 enum ColorCodigo {
-  ORG_ROJO, ORG_VERDE, ORG_AMARILLO, ORG_VIOLETA, ORG_NARANJA,
-  INORG_AZUL, INORG_BLANCO, INORG_NEGRO, INORG_CAFE,
+  ORG_ROJO,
+  ORG_VERDE,
+  ORG_AMARILLO,
+  ORG_VIOLETA,
+  ORG_NARANJA,
+  INORG_AZUL,
+  INORG_BLANCO,
+  INORG_NEGRO,
+  INORG_CAFE,
   COLOR_INDEFINIDO
 };
 
@@ -73,30 +78,30 @@ static const ColorReferencia referencias[] = {
   { 0.260f, 0.337f, 0.403f, INORG_CAFE }
 };
 
-// ————————————————————————— GLOBALES —————————————————————————
-Servo              servoMotor;
-LiquidCrystal_I2C  lcd(0x27, 16, 2);
-SoftwareSerial     bluetooth(PIN_BT_RX, PIN_BT_TX);
+// ————————————— GLOBALES —————————————
+Servo servoMotor;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+SoftwareSerial bluetooth(PIN_BT_RX, PIN_BT_TX);
 
-EstadoSistema      estado               = ESPERANDO;
-unsigned long      timestampEstado      = 0;
-unsigned long      timestampDetect      = 0;
-unsigned long      timestampClasificado = 0;
+EstadoSistema estado = ESPERANDO;
+unsigned long timestampEstado = 0;
+unsigned long timestampDetect = 0;
+unsigned long timestampClasificado = 0;
 
-bool               objetoPresentePrev   = false;
-String             ultimaLinea1         = "";
-String             ultimaLinea2         = "";
+bool objetoPresentePrev = false;
+String ultimaLinea1 = "";
+String ultimaLinea2 = "";
 
-// ————————————————————————— PROTOTIPOS —————————————————————————
-void        cambiarEstado(EstadoSistema nuevo);
-void        logDebug(const String &msg);
-void        mostrarLCD(const String &l1, const String &l2);
-void        moverServo(int angulo);
-int         leerColorPromedio(bool s2, bool s3);
+// ————————————— PROTOTIPOS —————————————
+void cambiarEstado(EstadoSistema nuevo);
+void logDebug(const String &msg);
+void mostrarLCD(const String &l1, const String &l2);
+void moverServo(int angulo);
+int leerColorPromedio(bool s2, bool s3);
 ColorCodigo clasificarColor(float r, float g, float b);
-float       medirDistanciaCM();
+float medirDistanciaCM();
 
-// ————————————————————————— SETUP —————————————————————————
+// ————————————— SETUP —————————————
 void setup() {
   if (DEBUG) {
     Serial.begin(SERIAL_BAUD);
@@ -112,7 +117,7 @@ void setup() {
   pinMode(PIN_SENSOR_OUT, INPUT);
   pinMode(PIN_LED, OUTPUT);
 
-  // Sensor de color
+  // Configuracion sensor de color
   digitalWrite(PIN_S0, HIGH);
   digitalWrite(PIN_S1, LOW);
 
@@ -121,37 +126,36 @@ void setup() {
 
   lcd.init();
   lcd.backlight();
-  mostrarLCD("Sistema listo", "");
+  mostrarLCD("SISTEMA LISTO", "");
   cambiarEstado(ESPERANDO);
 }
 
-// ————————————————————————— LOOP —————————————————————————
+// ————————————— LOOP —————————————
 void loop() {
-  float distancia   = medirDistanciaCM();
-  bool  presenteNow = (distancia <= DIST_THRESHOLD_CM);
+  float distancia = medirDistanciaCM();
+  bool presenteNow = (distancia <= DIST_THRESHOLD_CM);
 
-  // Deep debug: registro de cada iteración
   if (DEEP_DEBUG) {
-    logDebug("LOOP ▶ est=" + String(estado)
-             + " dist=" + String(distancia,1)
-             + " pres=" + (presenteNow?"1":"0")
-             + " dt_cla=" + ((estado==CLASIFICADO)?String(millis()-timestampClasificado):"-"));
+    logDebug("LOOP est=" + String(estado)
+             + " dist=" + String(distancia, 1)
+             + " pres=" + (presenteNow ? "1" : "0")
+             + " dt_cla=" + ((estado == CLASIFICADO) ? String(millis() - timestampClasificado) : "-"));
   }
 
-  // Forzar salida de CLASIFICADO tras RESULT_TIME_MS
+  // Salida forzada de CLASIFICADO tras RESULT_TIME_MS
   if (estado == CLASIFICADO) {
     if (millis() - timestampClasificado >= RESULT_TIME_MS) {
       digitalWrite(PIN_LED, LOW);
       moverServo(0);
-      mostrarLCD("Esperando", "objeto...");
+      mostrarLCD("ESPERANDO", "OBJETO...");
       cambiarEstado(ESPERANDO);
     }
   }
 
-  // Reactivación desde INACTIVO
+  // Reactivacion desde INACTIVO
   if (estado == INACTIVO && presenteNow) {
     lcd.backlight();
-    mostrarLCD("🟢 Reactivado", "Esperando...");
+    mostrarLCD("ACTIVADO", "ESPERANDO OBJETO");
     moverServo(0);
     cambiarEstado(ESPERANDO);
     objetoPresentePrev = true;
@@ -159,11 +163,11 @@ void loop() {
     return;
   }
 
-  // Máquina de estados
+  // Maquina de estados
   switch (estado) {
     case ESPERANDO:
       if (presenteNow && !objetoPresentePrev) {
-        mostrarLCD("Analizando...", "");
+        mostrarLCD("ANALIZANDO...", "");
         cambiarEstado(DETECTANDO);
         timestampDetect = millis();
       }
@@ -171,7 +175,7 @@ void loop() {
 
     case DETECTANDO:
       if (!presenteNow) {
-        mostrarLCD("Esperando", "objeto...");
+        mostrarLCD("ESPERANDO", "OBJETO...");
         moverServo(0);
         cambiarEstado(ESPERANDO);
       } else if (millis() - timestampDetect >= ANALYSIS_TIME_MS) {
@@ -183,63 +187,64 @@ void loop() {
       if (!presenteNow) {
         digitalWrite(PIN_LED, LOW);
         moverServo(0);
-        mostrarLCD("Esperando", "objeto...");
+        mostrarLCD("ESPERANDO", "OBJETO...");
         cambiarEstado(ESPERANDO);
         break;
       }
       digitalWrite(PIN_LED, HIGH);
       moverServo(90);
-      logDebug("🔍 Analizando color...");
+      logDebug("ANALIZANDO COLOR...");
       {
         int r = leerColorPromedio(LOW, LOW);
         int g = leerColorPromedio(HIGH, HIGH);
         int b = leerColorPromedio(LOW, HIGH);
-        float total = float(r+g+b);
+        float total = float(r + g + b);
         if (total <= 0.0f) {
-          logDebug("⚠ Error de lectura");
-          mostrarLCD("Error sensor", "");
-          delay(PRODUCTION_MODE ? 0 : 500);
+          logDebug("ERROR DE LECTURA");
+          mostrarLCD("ERROR SENSOR", "");
+          if (!PRODUCTION_MODE) delay(500);
           cambiarEstado(ESPERANDO);
           break;
         }
-        ColorCodigo cod = clasificarColor(r/total, g/total, b/total);
+        ColorCodigo cod = clasificarColor(r / total, g / total, b / total);
         String tipo = (cod == COLOR_INDEFINIDO) ? "INDEFINIDO"
-                      : (cod <= ORG_NARANJA)    ? "ORGÁNICO"
-                                                : "INORGÁNICO";
-        mostrarLCD("Detectado:", tipo);
-        logDebug("🎨 " + tipo);
+                      : (cod <= ORG_NARANJA)    ? "ORGANICO"
+                                                : "INORGANICO";
+        mostrarLCD("DETECTADO:", tipo);
+        logDebug("COLOR: " + tipo);
       }
       timestampClasificado = millis();
       cambiarEstado(CLASIFICADO);
       break;
 
     case CLASIFICADO:
-      // sin lógica extra: la salida ya se forzó arriba
+      // salida gestionada arriba
       break;
 
     case INACTIVO:
+      // gestionado al inicio
       break;
   }
 
   // Inactividad en ESPERANDO
   if (estado == ESPERANDO
       && millis() - timestampEstado >= INACTIVITY_TIMEOUT_MS) {
-    mostrarLCD("😴 Inactivo", "Acércate 👋");
-    delay(PRODUCTION_MODE ? 0 : 1500);
+    mostrarLCD("INACTIVO", "ACERCARSE");
+    if (!PRODUCTION_MODE) delay(1500);
     lcd.noBacklight();
     cambiarEstado(INACTIVO);
   }
 
   objetoPresentePrev = presenteNow;
-  delay(PRODUCTION_MODE ? 0 : 50);
+  if (!PRODUCTION_MODE) delay(50);
 }
 
-// ————————————————————————— FUNCIONES —————————————————————————
+// ————————————— FUNCIONES —————————————
 void cambiarEstado(EstadoSistema nuevo) {
   if (estado != nuevo) {
     estado = nuevo;
     timestampEstado = millis();
-    logDebug("🔁 Estado → " + String(nuevo));
+    logDebug("ESTADO -> " + String(nuevo));
   }
 }
 
@@ -252,8 +257,10 @@ void logDebug(const String &msg) {
 void mostrarLCD(const String &l1, const String &l2) {
   if (l1 == ultimaLinea1 && l2 == ultimaLinea2) return;
   lcd.clear();
-  lcd.setCursor(0,0); lcd.print(l1);
-  lcd.setCursor(0,1); lcd.print(l2);
+  lcd.setCursor(0, 0);
+  lcd.print(l1);
+  lcd.setCursor(0, 1);
+  lcd.print(l2);
   ultimaLinea1 = l1;
   ultimaLinea2 = l2;
 }
@@ -265,7 +272,7 @@ void moverServo(int angulo) {
 int leerColorPromedio(bool s2, bool s3) {
   digitalWrite(PIN_S2, s2);
   digitalWrite(PIN_S3, s3);
-  delay(PRODUCTION_MODE ? 0 : 50);
+  if (!PRODUCTION_MODE) delay(50);
   long sum = 0;
   for (int i = 0; i < COLOR_SAMPLE_COUNT; i++) {
     sum += pulseIn(PIN_SENSOR_OUT, LOW);
@@ -279,13 +286,13 @@ ColorCodigo clasificarColor(float r, float g, float b) {
   ColorCodigo mejor = COLOR_INDEFINIDO;
   for (auto &ref : referencias) {
     float dr = r - ref.r, dg = g - ref.g, db = b - ref.b;
-    float d = sqrt(dr*dr + dg*dg + db*db);
+    float d = sqrt(dr * dr + dg * dg + db * db);
     if (d < minDist) {
       minDist = d;
       mejor = ref.codigo;
     }
   }
-  logDebug("📐 Dist.min = " + String(minDist, 3));
+  logDebug("DIST_MIN = " + String(minDist, 3));
   return (minDist < COLOR_DIST_THRESHOLD) ? mejor : COLOR_INDEFINIDO;
 }
 
