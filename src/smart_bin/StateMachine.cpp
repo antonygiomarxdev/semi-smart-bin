@@ -23,7 +23,9 @@ StateMachine::StateMachine(DistanceSensor &ds,
   : _dist(ds), _color(cs), _disp(dm), _servo(servo), _state(ESPERANDO), _tsState(0), _tsDetect(0), _tsClassified(0), _prevPresent(false), _presenceCount(0), _absenceCount(0), _lastR(0), _lastG(0), _lastB(0) {}
 
 void StateMachine::begin() {
+  Serial.begin(SERIAL_BAUD);
   _tsState = millis();
+  _disp.begin();
   _disp.show("SISTEMA LISTO", "");
 }
 
@@ -58,7 +60,7 @@ void StateMachine::update() {
 
   LOGDD(String("[DEEP] upd st=") + _state
         + " dist=" + String(d, 1)
-        + " pres=" + present
+        + " pres=" + (present ? "1" : "0")
         + " dtSt=" + (now - _tsState));
 
   // — Timeout inactividad —
@@ -122,7 +124,6 @@ void StateMachine::update() {
   _prevPresent = present;
 }
 
-// ————— Manejo de estado CLASIFICADO —————
 void StateMachine::_handleClassified(unsigned long now, bool present) {
   // 1) Reanálisis inmediato si cambia color
   if (_hasColorChanged()) {
@@ -149,22 +150,17 @@ void StateMachine::_handleClassified(unsigned long now, bool present) {
 }
 
 bool StateMachine::_hasColorChanged() {
-  int rr = _color.measure(LOW, LOW);
-  int gg = _color.measure(HIGH, HIGH);
-  int bb = _color.measure(LOW, HIGH);
+  int rr = _color.measure(LOW, LOW),
+      gg = _color.measure(HIGH, HIGH),
+      bb = _color.measure(LOW, HIGH);
   float sum = float(rr + gg + bb);
   if (sum <= 0) return false;
 
-  float nr = rr / sum;
-  float ng = gg / sum;
-  float nb = bb / sum;
-  float dr = nr - _lastR;
-  float dg = ng - _lastG;
-  float db = nb - _lastB;
+  float nr = rr / sum, ng = gg / sum, nb = bb / sum;
+  float dr = nr - _lastR, dg = ng - _lastG, db = nb - _lastB;
   return (dr * dr + dg * dg + db * db) > COLOR_CHANGE_THRESHOLD2;
 }
 
-// ————— Transiciones —————
 void StateMachine::_toWaiting() {
   _disp.backlightOn();
   _servo.write(0);
@@ -213,7 +209,6 @@ void StateMachine::_toInactive() {
   _tsState = millis();
 }
 
-// ————— Clasificación sin sqrt() —————
 ColorCodigo StateMachine::_classifyColor(float r, float g, float b) {
   float best2 = FLT_MAX;
   int bestI = -1;

@@ -11,7 +11,7 @@ static constexpr bool DEEP_DEBUG = false && !PRODUCTION_MODE;
 // Intervalos y tiempos (ms)
 static const unsigned long UPDATE_INTERVAL_MS = 30;        // 33 Hz
 static const unsigned long ANALYSIS_TIME_MS = 500;         // 0.5 s
-static const unsigned long RESULT_TIME_MS = 7000;          // 7 s (espera tras cada clasificación)
+static const unsigned long RESULT_TIME_MS = 7000;          // 7 s
 static const unsigned long INACTIVITY_TIMEOUT_MS = 15000;  // 15 s
 static const unsigned long INACTIVE_DISPLAY_MS = 1500;     // 1.5 s
 

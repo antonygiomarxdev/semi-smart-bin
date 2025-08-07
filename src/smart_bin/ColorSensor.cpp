@@ -1,20 +1,4 @@
 #include "ColorSensor.h"
-#include "Config.h"
-
-#if DEBUG
-#define LOGD(msg) Serial.println(msg)
-#else
-#define LOGD(msg) \
-  do { \
-  } while (0)
-#endif
-#if DEEP_DEBUG
-#define LOGDD(msg) Serial.println(msg)
-#else
-#define LOGDD(msg) \
-  do { \
-  } while (0)
-#endif
 
 ColorSensor::ColorSensor(uint8_t s0, uint8_t s1,
                          uint8_t s2, uint8_t s3,
@@ -40,10 +24,14 @@ int ColorSensor::measure(bool s2Level, bool s3Level) {
   for (int i = 0; i < COLOR_SAMPLE_COUNT; ++i) {
     long pulse = pulseIn(_out, LOW);
     sum += pulse;
-    LOGDD(String("[DEEP] Color raw pulse[") + i + "] = " + pulse + " µs");
+#if DEEP_DEBUG
+    Serial.println(String("[DEEP] CLRp=") + pulse);
+#endif
     delayMicroseconds(5);
   }
   int avg = sum / COLOR_SAMPLE_COUNT;
-  LOGD(String("[DBG] Color avg = ") + avg);
+#if DEBUG
+  Serial.println(String("[DBG] CLRavg=") + avg);
+#endif
   return avg;
 }

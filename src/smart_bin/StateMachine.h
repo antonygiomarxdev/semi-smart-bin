@@ -8,13 +8,11 @@
 #include "Config.h"
 #include "Types.h"
 
-// — Runtime‐checked logging macros —
-// DEBUG-level (state transitions, key events)
+// — Logging macros (Serial solo) —
 #define LOGD(msg) \
   do { \
     if (DEBUG) Serial.println(msg); \
   } while (0)
-// DEEP_DEBUG-level (per-tick, raw sensor values…)
 #define LOGDD(msg) \
   do { \
     if (DEEP_DEBUG) Serial.println(msg); \

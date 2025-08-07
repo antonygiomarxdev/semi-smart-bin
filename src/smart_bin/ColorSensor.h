@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Arduino.h>
 #include "Config.h"
 
@@ -8,7 +9,7 @@ public:
               uint8_t s2, uint8_t s3,
               uint8_t outPin);
   void begin();
-  /// Devuelve conteo medio de pulsos
+  /// Devuelve promedio de pulsos
   int measure(bool s2Level, bool s3Level);
 
 private:

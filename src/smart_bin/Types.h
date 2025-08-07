@@ -14,7 +14,7 @@ enum ColorCodigo {
   COLOR_INDEFINIDO
 };
 
-/// Estados de la FSM
+/// Estados de la máquina
 enum EstadoSistema {
   ESPERANDO = 0,
   DETECTANDO = 1,
