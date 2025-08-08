@@ -171,6 +171,7 @@ void StateMachine::_toWaiting() {
 
 void StateMachine::_toDetecting() {
   _disp.backlightOn();
+  _color.ledOn();
   _disp.show("DETECTANDO...", "");
   _state = DETECTANDO;
   _tsDetect = millis();
@@ -184,6 +185,7 @@ void StateMachine::_toAnalyzing() {
 
 void StateMachine::_toClassified() {
   _disp.backlightOn();
+  _color.ledOff();
   _state = CLASIFICADO;
   _tsClassified = millis();
   // Guardar normalización
